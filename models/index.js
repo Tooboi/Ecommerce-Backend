@@ -10,7 +10,7 @@ Product.belongsTo(Category, {
 })
 // TODO: Categories have many Products
 Category.hasMany(Product, {
-  
+  foreignKey: ''
 })
 // TODO: Products belongToMany Tags (through ProductTag)
 
