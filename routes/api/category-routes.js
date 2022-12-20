@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
   const allCat = await Category.findAll().catch((err) => {
     res.json(err);
   });
-  res.json(allCat)
+  res.json(allCat);
 });
 
 router.get('/:id', async (req, res) => {
@@ -31,7 +31,7 @@ router.post('/', async (req, res) => {
   // create a new category
   try {
     const catPost = await Category.create({
-      category_name: req.body.category_name
+      category_name: req.body.category_name,
     });
     res.status(200).json(catPost);
   } catch (err) {
@@ -40,11 +40,37 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-  // update a category by its `id` valueasync 
+  // update a category by its `id` valueasync
+  try {
+    const id = req.params.id;
+    const category = await Category.findByPk(id);
+    if (category) {
+      const updatedCategory = await category.update(req.body);
+      res.status(200).json(updatedCategory);
+    } else {
+      res.status(404).json({ message: 'Category not found :(' });
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 router.delete('/:id', async (req, res) => {
   // delete a category by its `id` value
+  try {
+    const deleteCat = await Category.destroy({
+      where: {
+        id: req.params.id,
+      },
+    });
+    if (!deleteCat) {
+      res.status(404).json({ message: 'Category not found :(' });
+      return;
+    }
+    res.status(200).json(deleteCat);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 module.exports = router;
